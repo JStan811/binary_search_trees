@@ -205,6 +205,17 @@ module BinarySearchTrees
       height
     end
 
+    def depth(node, root = @root, level_change_count = 0, depth = 0)
+      # base case
+      return depth if node == root
+
+      depth = level_change_count + 1 if root.left_child == node || root.right_child == node
+
+      depth = depth(node, root.left_child, level_change_count + 1, depth) unless root.left_child.nil?
+      depth = depth(node, root.right_child, level_change_count + 1, depth) unless root.right_child.nil?
+      depth
+    end
+
     private
 
     def build_tree(array, start_index, end_index)
