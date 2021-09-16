@@ -3,29 +3,33 @@
 require_relative 'node'
 require_relative 'tree'
 
-# array_of_random_numbers = (Array.new(15) { rand(1..100) })
-
-array_of_random_numbers = [48, 84, 5, 95, 30, 66, 8, 26, 75, 17, 23, 79, 22, 80, 56]
-array_simple = [1, 2, 3, 4, 5, 6, 7]
+array_of_random_numbers = (Array.new(15) { rand(1..100) })
 
 my_tree = BinarySearchTrees::Tree.new(array_of_random_numbers)
-my_tree_simple = BinarySearchTrees::Tree.new(array_simple)
-# my_tree_empty = BinarySearchTrees::Tree.new
 
-# my_tree_simple.pretty_print
-
-# puts my_tree_simple.height(my_tree_simple.find(7))
-
-# my_tree_simple.insert(3.5)
-
-# my_tree_simple.pretty_print
-
-# puts my_tree_simple.depth(my_tree_simple.find(3.5))
-
-my_tree.insert(45)
-
-my_tree.insert(44)
-
+puts 'Original Tree'
 my_tree.pretty_print
+puts "Balanced? #{my_tree.balanced?}"
+puts "Level-order: #{my_tree.level_order_using_recursion}"
+puts "Preorder: #{my_tree.preorder}"
+puts "Postorder: #{my_tree.postorder}"
+puts "Inorder: #{my_tree.inorder}"
 
-puts my_tree.depth(my_tree.find(44))
+puts ''
+puts 'Unbalance'
+my_tree.insert(105)
+my_tree.insert(101)
+my_tree.insert(110)
+my_tree.insert(1000)
+my_tree.pretty_print
+puts "Balanced? #{my_tree.balanced?}"
+
+puts ''
+puts 'Rebalance'
+my_tree.rebalance
+my_tree.pretty_print
+puts "Balanced? #{my_tree.balanced?}"
+puts "Level-order: #{my_tree.level_order_using_recursion}"
+puts "Preorder: #{my_tree.preorder}"
+puts "Postorder: #{my_tree.postorder}"
+puts "Inorder: #{my_tree.inorder}"

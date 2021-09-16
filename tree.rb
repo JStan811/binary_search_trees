@@ -21,6 +21,7 @@ module BinarySearchTrees
     # rubocop: disable Metrics/MethodLength
     # rubocop: disable Metrics/AbcSize
     # rubocop: disable Metrics/PerceivedComplexity
+    # rubocop: disable Metrics/CyclomaticComplexity
     def insert(value)
       unless find(value).nil?
         puts 'Value already exists in tree.'
@@ -29,7 +30,7 @@ module BinarySearchTrees
 
       new_node = Node.new(value)
       current_node = @root
-      until current_node.left_child.nil? && current_node.right_child.nil?
+      until (current_node.left_child.nil? && value < current_node.data) || (current_node.right_child.nil? && value > current_node.data)
         current_node = if value < current_node.data && !current_node.left_child.nil?
                          current_node.left_child
                        else
@@ -47,6 +48,7 @@ module BinarySearchTrees
     # rubocop: enable Metrics/MethodLength
     # rubocop: enable Metrics/AbcSize
     # rubocop: enable Metrics/PerceivedComplexity
+    # rubocop: enable Metrics/CyclomaticComplexity
 
     # rubocop: disable Metrics/MethodLength
     # rubocop: disable Metrics/AbcSize
@@ -194,7 +196,17 @@ module BinarySearchTrees
       result_array << root.data
     end
 
-    def height(node, level_change_count = 0, height = 0)
+    # this #height I grabbed from geeksforgeeks.org
+    def height(node)
+      # base condition when binary tree is empty
+      return 0 if node.nil?
+
+      [height(node.left_child), height(node.right_child)].max + 1
+    end
+
+    # this was my original attempt at height. It worked at first but then
+    # caused issues when I tried to use it with #balanced?
+    def height_old(node, level_change_count = 0, height = 0)
       # base case
       return height if node.data == inorder.last
 
@@ -214,6 +226,28 @@ module BinarySearchTrees
       depth = depth(node, root.left_child, level_change_count + 1, depth) unless root.left_child.nil?
       depth = depth(node, root.right_child, level_change_count + 1, depth) unless root.right_child.nil?
       depth
+    end
+
+    # I adopted some of the logic in this from geeksforgeeks.org as I have just
+    # spent too much time on this
+    def balanced?(root = @root)
+      return true if root.nil?
+
+      left_height = height(root.left_child)
+      right_height = height(root.right_child)
+      if (left_height - right_height).abs <= 1 && balanced?(root.left_child) == true && balanced?(root.right_child) == true
+        return true
+      end
+
+      false
+    end
+
+    def rebalance
+      # guard clause in case tree is already balanced
+      return self if balanced?
+
+      array_to_build_with = inorder
+      @root = build_tree(array_to_build_with, 0, array_to_build_with.length - 1)
     end
 
     private
